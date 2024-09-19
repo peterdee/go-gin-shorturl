@@ -12,8 +12,11 @@ var ENV_NAMES = EnvNames{
 
 var INFO = Info{
 	BadRequest:          "BAD_REQUEST",
+	Forbidden:           "FORBIDDEN",
 	InternalServerError: "INTERNAL_SERVER_ERROR",
 	InvalidData:         "INVALID_DATA",
+	InvalidPassword:     "INVALID_PASSWORD",
 	MissingData:         "MISSING_DATA",
+	NotFound:            "NOT_FOUND",
 	Ok:                  "OK",
 }

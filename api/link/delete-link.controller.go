@@ -27,8 +27,9 @@ func deleteLinkController(ginContext *gin.Context) {
 		return
 	}
 
+	password := strings.Trim(payload.Password, " ")
 	shortID := strings.Trim(payload.ShortID, " ")
-	if shortID == "" {
+	if password == "" || shortID == "" {
 		utilities.Response(utilities.ResponseOptions{
 			Context: ginContext,
 			Info:    constants.INFO.MissingData,
@@ -36,6 +37,8 @@ func deleteLinkController(ginContext *gin.Context) {
 		})
 		return
 	}
+
+	// TODO: wrap all database requests into transaction
 
 	queryContext, cancel := context.WithTimeout(context.Background(), 15*time.Second)
 	defer cancel()
@@ -58,6 +61,49 @@ func deleteLinkController(ginContext *gin.Context) {
 			Context: ginContext,
 			Info:    constants.INFO.InternalServerError,
 			Status:  http.StatusInternalServerError,
+		})
+		return
+	}
+
+	if link.PasswordHash == "" {
+		utilities.Response(utilities.ResponseOptions{
+			Context: ginContext,
+			Info:    constants.INFO.Forbidden,
+			Status:  http.StatusForbidden,
+		})
+		return
+	}
+
+	passwordIsValid, hashError := utilities.CompareHashWithPlaintext(
+		link.PasswordHash,
+		password,
+	)
+	if hashError != nil {
+		utilities.Response(utilities.ResponseOptions{
+			Context: ginContext,
+			Info:    constants.INFO.InternalServerError,
+			Status:  http.StatusInternalServerError,
+		})
+		return
+	}
+	if !passwordIsValid {
+		utilities.Response(utilities.ResponseOptions{
+			Context: ginContext,
+			Info:    constants.INFO.InvalidPassword,
+			Status:  http.StatusUnauthorized,
+		})
+		return
+	}
+
+	_, queryError = mongodb.Links.DeleteOne(
+		queryContext,
+		bson.D{{Key: "shortID", Value: shortID}},
+	)
+	if queryError != nil {
+		utilities.Response(utilities.ResponseOptions{
+			Context: ginContext,
+			Info:    constants.INFO.InvalidPassword,
+			Status:  http.StatusUnauthorized,
 		})
 		return
 	}

@@ -1,19 +1,54 @@
 package index
 
 import (
-	"github.com/gin-gonic/gin"
+	"context"
+	"net/http"
+	"time"
 
+	"github.com/gin-gonic/gin"
+	"go.mongodb.org/mongo-driver/v2/bson"
+	"go.mongodb.org/mongo-driver/v2/mongo"
+
+	"go-gin-url/constants"
+	"go-gin-url/mongodb"
 	"go-gin-url/utilities"
 )
 
-func redirectController(context *gin.Context) {
-	link, _ := context.Params.Get("link")
+func redirectLinkController(ginContext *gin.Context) {
+	shortID, ok := ginContext.Params.Get("id")
+	if !ok {
+		utilities.Response(utilities.ResponseOptions{
+			Context: ginContext,
+			Info:    constants.INFO.MissingData,
+			Status:  http.StatusBadRequest,
+		})
+		return
+	}
 
-	// TODO: get original link and redirect instead of regular response
-	utilities.Response(utilities.ResponseOptions{
-		Context: context,
-		Data: gin.H{
-			"link": link,
-		},
-	})
+	queryContext, cancel := context.WithTimeout(context.Background(), 15*time.Second)
+	defer cancel()
+
+	var linkRecord mongodb.Link
+	queryError := mongodb.Links.FindOne(
+		queryContext,
+		bson.D{{Key: "shortID", Value: shortID}},
+	).Decode(&linkRecord)
+	if queryError != nil {
+		if queryError == mongo.ErrNoDocuments {
+			utilities.Response(utilities.ResponseOptions{
+				Context: ginContext,
+				Info:    constants.INFO.NotFound,
+				Status:  http.StatusNotFound,
+			})
+			return
+		}
+		utilities.Response(utilities.ResponseOptions{
+			Context: ginContext,
+			Info:    constants.INFO.InternalServerError,
+			Status:  http.StatusInternalServerError,
+		})
+		return
+	}
+
+	ginContext.Redirect(http.StatusMovedPermanently, linkRecord.OriginalURL)
 }

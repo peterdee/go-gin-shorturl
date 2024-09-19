@@ -8,8 +8,11 @@ type EnvNames struct {
 
 type Info struct {
 	BadRequest          string
+	Forbidden           string
 	InternalServerError string
 	InvalidData         string
+	InvalidPassword     string
 	MissingData         string
+	NotFound            string
 	Ok                  string
 }

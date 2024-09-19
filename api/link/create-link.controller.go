@@ -7,7 +7,6 @@ import (
 	"strings"
 	"time"
 
-	"github.com/alexedwards/argon2id"
 	"github.com/gin-gonic/gin"
 	"github.com/julyskies/gohelpers"
 
@@ -66,7 +65,7 @@ func createLinkController(ginContext *gin.Context) {
 
 	password := strings.Trim(payload.Password, " ")
 	if password != "" {
-		hash, hashError := argon2id.CreateHash(password, argon2id.DefaultParams)
+		hash, hashError := utilities.CreateHash(password)
 		if hashError != nil {
 			utilities.Response(utilities.ResponseOptions{
 				Context: ginContext,
