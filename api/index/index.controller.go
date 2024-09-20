@@ -6,6 +6,6 @@ import (
 	"go-gin-url/utilities"
 )
 
-func indexController(context *gin.Context) {
-	utilities.Response(utilities.ResponseOptions{Context: context})
+func indexController(ginContext *gin.Context) {
+	utilities.Response(utilities.ResponseOptions{Context: ginContext})
 }

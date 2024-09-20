@@ -60,7 +60,6 @@ func createLinkController(ginContext *gin.Context) {
 		CreatedAt:   int(gohelpers.MakeTimestampSeconds()),
 		OriginalURL: originalURL,
 		ShortID:     shortID,
-		UpdatedAt:   int(gohelpers.MakeTimestampSeconds()),
 	}
 
 	password := strings.Trim(payload.Password, " ")
