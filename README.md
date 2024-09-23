@@ -1,6 +1,6 @@
 ## go-gin-shorturl
 
-URL shortener written in Go with Gin & MongoDB
+URL shortener written in Golang with [Gin](https://github.com/gin-gonic/gin) & [MongoDB](https://github.com/mongodb/mongo-go-driver)
 
 ### Deploy
 
@@ -24,6 +24,8 @@ This project uses `.env` file, see [.env.example](./.env.example) for details
 ```shell script
 go run ./
 ```
+
+Alternatively launch with [Air](https://github.com/air-verse/air)
 
 ### License
 

@@ -38,8 +38,6 @@ func deleteLinkController(ginContext *gin.Context) {
 		return
 	}
 
-	// TODO: wrap all database requests into transaction
-
 	queryContext, cancel := context.WithTimeout(context.Background(), 15*time.Second)
 	defer cancel()
 
@@ -49,18 +47,16 @@ func deleteLinkController(ginContext *gin.Context) {
 		bson.D{{Key: "shortID", Value: shortID}},
 	).Decode(&link)
 	if queryError != nil {
+		info := constants.INFO.InternalServerError
+		status := http.StatusInternalServerError
 		if queryError == mongo.ErrNoDocuments {
-			utilities.Response(utilities.ResponseOptions{
-				Context: ginContext,
-				Info:    constants.INFO.InvalidData,
-				Status:  http.StatusBadRequest,
-			})
-			return
+			info = constants.INFO.InvalidData
+			status = http.StatusBadRequest
 		}
 		utilities.Response(utilities.ResponseOptions{
 			Context: ginContext,
-			Info:    constants.INFO.InternalServerError,
-			Status:  http.StatusInternalServerError,
+			Info:    info,
+			Status:  status,
 		})
 		return
 	}
@@ -102,8 +98,8 @@ func deleteLinkController(ginContext *gin.Context) {
 	if queryError != nil {
 		utilities.Response(utilities.ResponseOptions{
 			Context: ginContext,
-			Info:    constants.INFO.InvalidPassword,
-			Status:  http.StatusUnauthorized,
+			Info:    constants.INFO.InternalServerError,
+			Status:  http.StatusInternalServerError,
 		})
 		return
 	}

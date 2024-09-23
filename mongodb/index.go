@@ -28,7 +28,7 @@ func scheduledTasks() {
 			queryContext, cancel := context.WithTimeout(context.Background(), 15*time.Second)
 			defer cancel()
 
-			_, queryError := Links.DeleteMany(
+			result, queryError := Links.DeleteMany(
 				queryContext,
 				bson.D{{
 					Key: "createdAt",
@@ -41,6 +41,10 @@ func scheduledTasks() {
 			if queryError != nil {
 				log.Fatal(queryError)
 			}
+			log.Printf(
+				"Scheduled clean-up completed, deleted records: %d",
+				result.DeletedCount,
+			)
 		},
 	)
 	schedule.Start()
