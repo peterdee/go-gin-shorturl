@@ -6,13 +6,23 @@ import (
 
 	"github.com/gin-gonic/gin"
 	"github.com/joho/godotenv"
+	swaggerfiles "github.com/swaggo/files"
+	ginSwagger "github.com/swaggo/gin-swagger"
 
 	indexRouter "go-gin-url/api/index"
 	linkRouter "go-gin-url/api/link"
 	"go-gin-url/constants"
+	"go-gin-url/docs"
 	"go-gin-url/mongodb"
 	"go-gin-url/utilities"
 )
+
+// @title         URL Shortener APIs
+// @version       1.0
+
+// @license.name  MIT
+// @host					localhost:5454
+// @BasePath  		/
 
 func main() {
 	if envError := godotenv.Load(); envError != nil {
@@ -25,9 +35,13 @@ func main() {
 	gin.SetMode(mode)
 
 	app := gin.Default()
-
 	app.StaticFile("/favicon.ico", "./assets/favicon.ico")
 
+	// Swagger
+	docs.SwaggerInfo.BasePath = "/"
+	app.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerfiles.Handler))
+
+	// APIs
 	indexRouter.CreateRouter(app)
 	linkRouter.CreateRouter(app)
 

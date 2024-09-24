@@ -16,6 +16,13 @@ type ResponseOptions struct {
 	Status  int
 }
 
+type ResponseObject struct {
+	Data    interface{}
+	Info    string
+	Request string
+	Status  int
+}
+
 func Response(options ResponseOptions) {
 	info := options.Info
 	if info == "" {

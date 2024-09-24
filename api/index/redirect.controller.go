@@ -14,6 +14,12 @@ import (
 	"go-gin-url/utilities"
 )
 
+// redirectLinkController godoc
+// @Summary      	Handle redirect to the original URL
+// @Tags         	index
+// @Param 				short_id path string false "Short link ID"
+// @Success      	301
+// @Router       	/{short_id} [get]
 func redirectLinkController(ginContext *gin.Context) {
 	shortID, ok := ginContext.Params.Get("id")
 	if !ok {
