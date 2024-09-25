@@ -15,7 +15,11 @@ go mod download
 
 ### Environment variables
 
-This project uses `.env` file, see [.env.example](./.env.example) for details
+`.env` file requirement is based on the `ENV_SOURCE` variable, it can be either `env` or `file`
+
+If you are running the server without Docker, or if you are running the server using [Dockerfile](./Dockerfile) without Docker Compose, the `.env` file is required (see [.env.example](./.env.example) for details)
+
+If you want to run the server with [docker-compose.yaml](./docker-compose.yaml), then `.env` file is not required
 
 ### Launch
 
