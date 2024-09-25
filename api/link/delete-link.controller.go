@@ -15,8 +15,20 @@ import (
 	"go-gin-url/utilities"
 )
 
+// deleteLinkController godoc
+// @Summary      	Delete short URL
+// @Tags         	link
+// @Param 				request body link.deleteLinkRequestPayload true "Request body"
+// @Produce      	json
+// @Success      	200 {object} utilities.ResponseObject{data=nil} "OK"
+// @Failure				400 {object} utilities.ResponseObject{data=nil} "Missing required data"
+// @Failure				401 {object} utilities.ResponseObject{data=nil} "Unauthorized because password is invalid"
+// @Failure				403 {object} utilities.ResponseObject{data=nil} "Forbidden because link has no password"
+// @Failure				404 {object} utilities.ResponseObject{data=nil} "Record not found"
+// @Failure				500 {object} utilities.ResponseObject{data=nil} "Internal server error"
+// @Router       	/api/link/delete [post]
 func deleteLinkController(ginContext *gin.Context) {
-	var payload DeleteLinkPayload
+	var payload deleteLinkRequestPayload
 	bindError := ginContext.ShouldBind(&payload)
 	if bindError != nil {
 		utilities.Response(utilities.ResponseOptions{
@@ -50,8 +62,8 @@ func deleteLinkController(ginContext *gin.Context) {
 		info := constants.INFO.InternalServerError
 		status := http.StatusInternalServerError
 		if queryError == mongo.ErrNoDocuments {
-			info = constants.INFO.InvalidData
-			status = http.StatusBadRequest
+			info = constants.INFO.NotFound
+			status = http.StatusNotFound
 		}
 		utilities.Response(utilities.ResponseOptions{
 			Context: ginContext,

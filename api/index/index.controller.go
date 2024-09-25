@@ -7,7 +7,7 @@ import (
 )
 
 // indexController godoc
-// @Summary      Handle index GET request
+// @Summary      Handle index request
 // @Tags         index
 // @Produce      json
 // @Success      200 {object} utilities.ResponseObject{data=nil} "OK"

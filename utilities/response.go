@@ -5,6 +5,7 @@ import (
 	"net/http"
 
 	"github.com/gin-gonic/gin"
+	"github.com/julyskies/gohelpers"
 
 	"go-gin-url/constants"
 )
@@ -16,11 +17,13 @@ type ResponseOptions struct {
 	Status  int
 }
 
+// Struct for Swagger
 type ResponseObject struct {
-	Data    interface{}
-	Info    string
-	Request string
-	Status  int
+	Data     interface{} `json:"data"`
+	Datetime int         `json:"datetime"`
+	Info     string      `json:"info"`
+	Request  string      `json:"request"`
+	Status   int         `json:"status"`
 }
 
 func Response(options ResponseOptions) {
@@ -34,7 +37,8 @@ func Response(options ResponseOptions) {
 	}
 
 	responseObject := gin.H{
-		"info": info,
+		"datetime": gohelpers.MakeTimestampSeconds(),
+		"info":     info,
 		"request": fmt.Sprintf(
 			"%s [%s]",
 			options.Context.Request.URL,

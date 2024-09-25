@@ -27,6 +27,20 @@ go run ./
 
 Alternatively launch with [Air](https://github.com/air-verse/air)
 
+### Swagger
+
+Install [swag](https://github.com/swaggo/swag) and generate documentation
+
+```shell script
+go install github.com/swaggo/swag/cmd/swag@latest
+cd ./go-gin-shorturl
+swag init
+```
+
+Set `ENABLE_SWAGGER` environment variable to `true`
+
+Launch the server and open http://localhost:5454/swagger/index.html
+
 ### License
 
 [MIT](./LICENSE.md)

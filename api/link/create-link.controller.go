@@ -15,8 +15,17 @@ import (
 	"go-gin-url/utilities"
 )
 
+// createLinkController godoc
+// @Summary      	Create new short URL
+// @Tags         	link
+// @Param 				request body link.createLinkRequestPayload true "Request body"
+// @Produce      	json
+// @Success      	200 {object} utilities.ResponseObject{data=link.createLinkResponsePayload} "OK"
+// @Failure				400 {object} utilities.ResponseObject{data=nil} "Missing required data"
+// @Failure				500 {object} utilities.ResponseObject{data=nil} "Internal server error"
+// @Router       	/api/link/create [post]
 func createLinkController(ginContext *gin.Context) {
-	var payload CreateLinkPayload
+	var payload createLinkRequestPayload
 	bindError := ginContext.ShouldBind(&payload)
 	if bindError != nil {
 		utilities.Response(utilities.ResponseOptions{

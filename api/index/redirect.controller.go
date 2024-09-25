@@ -15,10 +15,13 @@ import (
 )
 
 // redirectLinkController godoc
-// @Summary      	Handle redirect to the original URL
+// @Summary      	Redirect to the original URL
 // @Tags         	index
 // @Param 				short_id path string false "Short link ID"
 // @Success      	301
+// @Failure				400 {object} utilities.ResponseObject{data=nil} "Missing required data"
+// @Failure				404 {object} utilities.ResponseObject{data=nil} "Record not found"
+// @Failure				500 {object} utilities.ResponseObject{data=nil} "Internal server error"
 // @Router       	/{short_id} [get]
 func redirectLinkController(ginContext *gin.Context) {
 	shortID, ok := ginContext.Params.Get("id")
