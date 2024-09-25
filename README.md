@@ -27,6 +27,18 @@ go run ./
 
 Alternatively launch with [Air](https://github.com/air-verse/air)
 
+##### With Docker
+
+```shell script
+docker run -p 5454:5454 --env-file .env -it $(docker build -q .)
+```
+
+##### With Docker Compose
+
+```shell script
+docker compose up -d
+```
+
 ### Swagger
 
 Install [swag](https://github.com/swaggo/swag) and generate documentation

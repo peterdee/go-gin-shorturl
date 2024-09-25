@@ -2,6 +2,7 @@ package constants
 
 type EnvNames struct {
 	ENABLE_SWAGGER          string
+	ENV_SOURCE              string
 	MONGO_CONNECTION_STRING string
 	MONGO_DATABASE_NAME     string
 	PORT                    string

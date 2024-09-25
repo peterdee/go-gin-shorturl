@@ -1,0 +1,38 @@
+services:
+  backend:
+    build:
+      dockerfile: ./Dockerfile
+    container_name: backend
+    environment:
+      - ENABLE_SWAGGER=false
+      - ENV_SOURCE=env
+      - GIN_MODE=release
+      - MONGO_CONNECTION_STRING=mongodb://mongodb:27017
+      - MONGO_DATABASE_NAME=urlsdocker
+      - PORT=5454
+    depends_on:
+      - mongodb
+    networks:
+      - app-network
+    ports:
+      - "5454:5454"
+    restart: unless-stopped
+
+  mongodb:
+    container_name: mongodb
+    image: mongodb/mongodb-community-server:6.0-ubi8
+    environment:
+      - MONGO_INITDB_DATABASE=urlsdocker
+    command: mongod --quiet --logpath /dev/null
+    networks:
+      - app-network
+    restart: unless-stopped
+    volumes:
+      - mongodata:/data/db
+
+networks:
+  app-network:
+    driver: bridge
+
+volumes:
+  mongodata:

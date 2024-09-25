@@ -24,8 +24,11 @@ import (
 // @host					localhost:5454
 // @BasePath  		/
 func main() {
-	if envError := godotenv.Load(); envError != nil {
-		log.Fatal(envError)
+	envSource := utilities.GetEnv(constants.ENV_NAMES.ENV_SOURCE)
+	if envSource != "env" {
+		if envError := godotenv.Load(); envError != nil {
+			log.Fatal(envError)
+		}
 	}
 
 	mongodb.Connect()

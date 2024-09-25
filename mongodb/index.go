@@ -61,31 +61,41 @@ func Connect() {
 			options.Client().ApplyURI(mongoConnectionString),
 		)
 		if connectionError != nil {
+			if s == 5 {
+				log.Fatal(connectionError)
+			}
 			log.Printf("Failed to connect to MongoDB, retry in %d seconds", s)
 			time.Sleep(time.Duration(s) * time.Second)
 			continue
 		}
+		Client = client
+		break
+	}
 
-		context, cancel := context.WithTimeout(context.Background(), 2*time.Second)
-		defer cancel()
-		pingError := client.Ping(context, readpref.Primary())
+	context, cancel := context.WithTimeout(context.Background(), 2*time.Second)
+	defer cancel()
+
+	for s := 1; s <= 5; s += 1 {
+		pingError := Client.Ping(context, readpref.Primary())
 		if pingError != nil {
+			if s == 5 {
+				log.Fatal(pingError)
+			}
 			log.Printf("Failed to ping MongoDB server, retry in %d seconds", s)
 			time.Sleep(time.Duration(s) * time.Second)
 			continue
 		}
-
-		databaseName := utilities.GetEnv(
-			constants.ENV_NAMES.MONGO_DATABASE_NAME,
-			constants.DEFAULT_MONGO_DATABASE_NAME,
-		)
-		Client = client
-		Database = client.Database(databaseName)
-		Links = Database.Collection("links")
-
-		scheduledTasks()
-
-		log.Println("Connected to MongoDB")
 		break
 	}
+
+	databaseName := utilities.GetEnv(
+		constants.ENV_NAMES.MONGO_DATABASE_NAME,
+		constants.DEFAULT_MONGO_DATABASE_NAME,
+	)
+	Database = Client.Database(databaseName)
+	Links = Database.Collection("links")
+
+	scheduledTasks()
+
+	log.Println("Connected to MongoDB")
 }
